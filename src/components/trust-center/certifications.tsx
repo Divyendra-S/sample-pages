@@ -25,10 +25,10 @@ export function Certifications() {
           {certifications.map((cert) => (
             <li
               key={cert.name}
-              className="flex flex-col items-center gap-2.5 border border-black/10 bg-white px-3 py-2.5"
+              className="flex flex-col items-center gap-2.5 border border-black/10 bg-white px-1 py-2.5"
             >
               <Image src={cert.badge} alt="" width={60} height={60} />
-              <span className="text-center text-[13px] leading-normal text-ink">
+              <span className="text-center text-[13px] leading-normal whitespace-nowrap text-ink">
                 {cert.name}
               </span>
             </li>
