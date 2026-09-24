@@ -9,7 +9,7 @@ const regions = {
 
 type Subprocessor = {
   name: string;
-  logo: { src: string; width: number; height: number; fill?: boolean };
+  logo: { src: string; width: number; height: number };
   purpose: string;
   data: string;
   region: keyof typeof regions;
@@ -106,14 +106,51 @@ const subprocessors: Subprocessor[] = [
 ];
 
 const columns = [
-  { label: "Subprocessor", className: "w-[147px]" },
-  { label: "Purpose", className: "w-[261px]" },
-  { label: "Data", className: "w-[284px]" },
-  { label: "Location", className: "w-[83px]" },
-  { label: "Reference", className: "w-[135px]" },
+  { label: "Subprocessor", className: "lg:w-[16%]" },
+  { label: "Purpose", className: "lg:w-[29%]" },
+  { label: "Data", className: "lg:w-[31%]" },
+  { label: "Location", className: "lg:w-[9%]" },
+  { label: "Reference", className: "lg:w-[15%]" },
 ];
 
-const cell = "h-[52px] px-3 align-middle";
+const cell = "h-[52px] px-3 py-2 align-middle";
+
+function Name({ subprocessor }: { subprocessor: Subprocessor }) {
+  const { logo } = subprocessor;
+
+  return (
+    <span className="flex items-center gap-2.5 font-medium text-strong">
+      <span className="flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black">
+        <Image src={logo.src} alt="" width={logo.width} height={logo.height} />
+      </span>
+      <span className="lg:truncate">{subprocessor.name}</span>
+    </span>
+  );
+}
+
+function Region({ region }: { region: Subprocessor["region"] }) {
+  return (
+    <span className="flex items-center gap-2 whitespace-nowrap text-body">
+      <Image src={regions[region]} alt="" width={20} height={20} />
+      {region}
+    </span>
+  );
+}
+
+function Reference({ reference }: { reference: Subprocessor["reference"] }) {
+  if (!reference.href) return reference.label;
+
+  return (
+    <a
+      href={reference.href}
+      target="_blank"
+      rel="noreferrer"
+      className="underline-offset-2 hover:underline"
+    >
+      {reference.label}
+    </a>
+  );
+}
 
 export function Subprocessors() {
   return (
@@ -123,8 +160,29 @@ export function Subprocessors() {
       icon="/trust-center/icon-network.svg"
       className="gap-6"
     >
-      <div className="overflow-x-auto border border-stroke-soft">
-        <table className="w-full min-w-[760px] table-fixed text-left text-sm leading-5 tracking-[-0.006em]">
+      <ul className="divide-y divide-stroke-soft border border-stroke-soft text-sm leading-5 tracking-[-0.006em] sm:hidden">
+        {subprocessors.map((sp) => (
+          <li key={sp.name} className="flex flex-col gap-3 p-3">
+            <div className="flex items-center justify-between gap-3">
+              <Name subprocessor={sp} />
+              <Region region={sp.region} />
+            </div>
+            <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5">
+              <dt className="text-soft">Purpose</dt>
+              <dd className="text-body">{sp.purpose}</dd>
+              <dt className="text-soft">Data</dt>
+              <dd className="text-body">{sp.data}</dd>
+              <dt className="text-soft">Reference</dt>
+              <dd className="font-medium text-strong">
+                <Reference reference={sp.reference} />
+              </dd>
+            </dl>
+          </li>
+        ))}
+      </ul>
+
+      <div className="scrollbar-none hidden overflow-x-auto border border-stroke-soft sm:block">
+        <table className="w-full text-left text-sm leading-5 tracking-[-0.006em] whitespace-nowrap lg:table-fixed">
           <thead className="border-b border-stroke-soft bg-weak">
             <tr>
               {columns.map((column) => (
@@ -144,52 +202,31 @@ export function Subprocessors() {
           <tbody className="divide-y divide-stroke-soft">
             {subprocessors.map((sp) => (
               <tr key={sp.name}>
-                <th scope="row" className={cn(cell, "font-medium text-strong")}>
-                  <span className="flex items-center gap-2.5">
-                    <span className="flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-full bg-black">
-                      <Image
-                        src={sp.logo.src}
-                        alt=""
-                        width={sp.logo.width}
-                        height={sp.logo.height}
-                      />
-                    </span>
-                    <span className="truncate">{sp.name}</span>
-                  </span>
+                <th scope="row" className={cell}>
+                  <Name subprocessor={sp} />
                 </th>
                 <td
-                  className={cn(cell, "truncate text-body")}
+                  className={cn(cell, "text-body lg:truncate")}
                   title={sp.purpose}
                 >
                   {sp.purpose}
                 </td>
-                <td className={cn(cell, "truncate text-body")} title={sp.data}>
+                <td
+                  className={cn(cell, "text-body lg:truncate")}
+                  title={sp.data}
+                >
                   {sp.data}
                 </td>
-                <td className={cn(cell, "text-body")}>
-                  <span className="flex items-center gap-2">
-                    <Image
-                      src={regions[sp.region]}
-                      alt=""
-                      width={20}
-                      height={20}
-                    />
-                    {sp.region}
-                  </span>
+                <td className={cell}>
+                  <Region region={sp.region} />
                 </td>
-                <td className={cn(cell, "font-medium text-strong")}>
-                  {sp.reference.href ? (
-                    <a
-                      href={sp.reference.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline-offset-2 hover:underline"
-                    >
-                      {sp.reference.label}
-                    </a>
-                  ) : (
-                    sp.reference.label
+                <td
+                  className={cn(
+                    cell,
+                    "font-medium whitespace-nowrap text-strong",
                   )}
+                >
+                  <Reference reference={sp.reference} />
                 </td>
               </tr>
             ))}

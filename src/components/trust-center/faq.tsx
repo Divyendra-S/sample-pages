@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { cn } from "@/lib/utils";
+import { FaqAccordion } from "./faq-accordion";
 
 // Only the first answer comes from the design; the rest are placeholder copy pending approval.
 const faqs = [
@@ -80,28 +81,7 @@ export function Faq() {
             />
           ))}
 
-          {faqs.map((faq, index) => (
-            <details
-              key={faq.question}
-              name="faq"
-              open={index === 0}
-              className="group border-b border-black/10 last:border-b-0"
-            >
-              <summary className="flex cursor-pointer list-none items-center gap-2.5 p-4 leading-normal font-medium text-ink sm:p-6 [&::-webkit-details-marker]:hidden">
-                <Image
-                  src="/trust-center/icon-chevron.svg"
-                  alt=""
-                  width={12}
-                  height={12}
-                  className="shrink-0 -rotate-90 transition-transform group-open:rotate-0"
-                />
-                {faq.question}
-              </summary>
-              <p className="-mt-1.5 max-w-[791px] pr-4 pb-4 pl-[38px] leading-normal text-dark-35 sm:-mt-3.5 sm:pr-6 sm:pb-6 sm:pl-[46px]">
-                {faq.answer}
-              </p>
-            </details>
-          ))}
+          <FaqAccordion items={faqs} />
         </div>
       </Container>
     </section>
